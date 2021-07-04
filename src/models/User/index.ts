@@ -1,5 +1,8 @@
 import { Schema, model } from 'mongoose';
 
+const currentDate = new Date();
+const brazilDate = currentDate.setHours(currentDate.getHours() - 3);
+
 const UserSchema = new Schema({
   name: {
     type: String,
@@ -21,11 +24,11 @@ const UserSchema = new Schema({
   },
   created_at: {
     type: Date,
-    default: Date.now,
+    default: brazilDate,
   },
   updated_at: {
     type: Date,
-    default: Date.now,
+    default: brazilDate,
   },
 });
 

@@ -1,13 +1,20 @@
 import { Router } from 'express';
 import Order from '../models/Order';
 
-import { isAuth } from '../utils/utils';
+import { isAdmin, isAuth } from '../utils/utils';
 
 const orderRouter = Router();
 
 orderRouter.get('/mine', isAuth, async (request: any, response) => {
   const orders = await Order.find({ user: request.user._id });
   response.send(orders);
+});
+
+orderRouter.get('/', isAuth, isAdmin, async (request: any, response: any) => {
+  const orders = await Order.find({})
+    .populate('User', 'name')
+    .sort({ created_at: -1 });
+  return response.send(orders);
 });
 
 orderRouter.post('/', isAuth, async (request: any, response: any) => {
@@ -31,6 +38,7 @@ orderRouter.post('/', isAuth, async (request: any, response: any) => {
         shippingPrice,
         totalPrice,
         user: request.user._id,
+        userName: request.user.name,
       });
       const createdOrder = await order.save();
       response
@@ -64,6 +72,29 @@ orderRouter.put('/:id/pay', isAuth, async (request, response) => {
     };
     const updatedOrder = await order.save();
     response.send({ message: 'Pedido pago', order: updatedOrder });
+  } else {
+    response.status(404).send({ message: 'Order Not Found' });
+  }
+});
+
+orderRouter.delete('/:id', isAuth, isAdmin, async (request, response) => {
+  const order = await Order.findById(request.params.id);
+  if (order) {
+    const deleteOrder = await order.remove();
+    response.send({ message: 'Order Deleted', order: deleteOrder });
+  } else {
+    response.status(404).send({ message: 'Order Not Found' });
+  }
+});
+
+orderRouter.put('/:id/deliver', isAuth, isAdmin, async (request, response) => {
+  const order = await Order.findById(request.params.id);
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+    response.send({ message: 'Order Delivered', order: updatedOrder });
   } else {
     response.status(404).send({ message: 'Order Not Found' });
   }

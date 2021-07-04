@@ -25,24 +25,20 @@ userRoutes.post('/register', async (request, response) => {
 });
 
 userRoutes.post('/signin', async (request, response) => {
-  try {
-    const { email, password } = request.body;
-    const user = await User.findOne({ email });
-    if (user) {
-      if (compareSync(password, user.password)) {
-        return response.json({
-          _id: user.id,
-          name: user.name,
-          email: user.email,
-          isAdmin: user.isAdmin,
-          token: generateToken(user),
-        });
-      }
+  const { email, password } = request.body;
+  const user = await User.findOne({ email });
+  if (user) {
+    if (compareSync(password, user.password)) {
+      return response.json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user),
+      });
     }
-    return response.status(401).json({ error: 'Email ou senha inválidos' });
-  } catch (err) {
-    return response.json({ error: err.message });
   }
+  return response.status(401).send({ error: 'Email ou senha inválidos' });
 });
 
 userRoutes.put('/profile', isAuth, async (request: any, response) => {

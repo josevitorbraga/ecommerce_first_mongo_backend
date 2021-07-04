@@ -15,7 +15,7 @@ const upload = multer(uploadConfig);
 productRoutes.post('/', isAuth, isAdmin, async (request, response) => {
   const product = new Product({
     name: `samle name ${Date.now()} `,
-    image: '/images/p1.jpg',
+    image: 'defaultImg.jpg',
     price: 0,
     category: 'sample category',
     countInStock: 0,
@@ -47,13 +47,10 @@ productRoutes.patch(
 );
 
 productRoutes.get('/', async (request, response) => {
-  try {
-    const productsList = await Product.find();
-
-    return response.json(productsList);
-  } catch (err) {
-    return response.json({ error: err.message });
-  }
+  const name = request.query.name || '';
+  const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
+  const products = await Product.find({ ...nameFilter });
+  response.send(products);
 });
 
 productRoutes.get('/:id', async (request, response) => {

@@ -23,6 +23,7 @@
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
+    "mercadopago": "^1.5.8",
     "mongoose": "^5.12.11",
     "multer": "^1.4.2",
     "uuid": "^8.3.2"
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^8.5.1",
+    "@types/mercadopago": "^1.5.3",
     "@types/typescript": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",

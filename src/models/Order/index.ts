@@ -1,5 +1,8 @@
 import { Schema, model } from 'mongoose';
 
+const currentDate = new Date();
+const brazilDate = currentDate.setHours(currentDate.getHours() - 3);
+
 const orderSchema = new Schema({
   orderItems: [
     {
@@ -12,6 +15,7 @@ const orderSchema = new Schema({
   ],
   shippingAddress: {
     fullName: { type: String, required: true },
+    contact: { type: String, required: true },
     address: { type: String, required: true },
     city: { type: String, required: true },
     postalCode: { type: String, required: true },
@@ -28,17 +32,18 @@ const orderSchema = new Schema({
   shippingPrice: { type: Number, required: true },
   totalPrice: { type: Number, required: true },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  userName: { type: String, ref: 'User', required: true },
   isPaid: { type: Boolean, default: false },
   paidAt: { type: Date },
   isDelivered: { type: Boolean, default: false },
   deliveredAt: { type: Date },
   created_at: {
     type: Date,
-    default: Date.now,
+    default: brazilDate,
   },
   updated_at: {
     type: Date,
-    default: Date.now,
+    default: brazilDate,
   },
 });
 
